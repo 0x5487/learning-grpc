@@ -1,5 +1,3 @@
 /.vscode
 *.exe
-
-
-
+/cmd/server/debug

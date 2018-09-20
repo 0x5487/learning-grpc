@@ -1,14 +1,13 @@
 package main
 
 import (
-	"context"
-	"log"
 	"net"
 
 	pb "github.com/jasonsoft/grpc-example/helloworld"
-
+	helloWorldGRPC "github.com/jasonsoft/grpc-example/helloworld/delivery/grpc"
+	"github.com/jasonsoft/log"
+	"github.com/jasonsoft/log/handlers/console"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 const (
@@ -16,22 +15,21 @@ const (
 )
 
 // server is used to implement helloworld.GreeterServer.
-type server struct{}
-
-// SayHello implements helloworld.GreeterServer
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	return &pb.HelloReply{Message: "Hello " + in.Name}, nil
-}
-
 func main() {
+	log.SetAppID("grpc") // unique id for the app
+
+	clog := console.New()
+	log.RegisterHandler(clog, log.AllLevels...)
+
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
-	// Register reflection service on gRPC server.
-	reflection.Register(s)
+
+	server := helloWorldGRPC.NewServer()
+	pb.RegisterGreeterServer(s, server)
+
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
