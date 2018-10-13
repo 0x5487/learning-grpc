@@ -15,5 +15,9 @@
    Or run `protoc` command (with the grpc plugin)
    
    ```
-   $ protoc -I helloworld/ helloworld/helloworld.proto --go_out=plugins=grpc:helloworld
+   $ protoc helloworld/helloworld.proto --go_out=.
    ```
+
+   #### Golang Note
+   1. no time struct in protobuf
+   2. 
