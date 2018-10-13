@@ -15,7 +15,7 @@
    Or run `protoc` command (with the grpc plugin)
    
    ```
-   $ protoc helloworld/helloworld.proto --go_out=.
+   $ protoc helloworld/helloworld.proto --go_out=plugins=grpc:.
    ```
 
    #### Golang Note
