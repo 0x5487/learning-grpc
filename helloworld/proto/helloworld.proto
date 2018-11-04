@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+
+package helloworld;
+
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+
+// 請求數據 Request格式定義
+message Request {
+    string input = 1;
+}
+// 響應數據Response格式定義
+message Response {
+    string output = 1;
+}
+
+service Chat {    
+    rpc BidStream(stream Request) returns (stream Response) {}
+}
