@@ -23,14 +23,14 @@ service Greeter {
 
 
 // 請求數據 Request格式定義
-message Request {
+message BidStreamRequest {
     string input = 1;
 }
 // 響應數據Response格式定義
-message Response {
+message BidStreamReply {
     string output = 1;
 }
 
 service Chat {    
-    rpc BidStream(stream Request) returns (stream Response) {}
+    rpc BidStream(stream BidStreamRequest) returns (stream BidStreamReply) {}
 }

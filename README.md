@@ -16,6 +16,7 @@
    
    ```
    $ protoc helloworld/proto/helloworld.proto --go_out=plugins=grpc:.
+   $ protoc helloworld/proto/helloworld.proto --plugin=protoc-gen-dart=c:\Users\jason\AppData\Roaming\Pub\Cache\bin\protoc-gen-dart.bat --dart_out=grpc:dart\proto
    ```
 
    #### Golang Note

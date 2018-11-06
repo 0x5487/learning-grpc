@@ -1,0 +1,10 @@
+name: dartGRPC
+description: dartlang.org example code
+
+dependencies:
+  async: '>=1.13.3 <3.0.0'
+  grpc: ^0.6.6
+  protobuf: ^0.10.1
+  meta: ^1.0.5
+  http: '>=0.11.3+17 <0.13.0'
+  http2: ^0.1.7
