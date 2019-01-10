@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+
+package proto;
+
+
+// 請求數據 Request格式定義
+message BidStreamRequest {
+    string input = 1;
+}
+// 響應數據Response格式定義
+message BidStreamReply {
+    string output = 1;
+}
+
+service Chat {    
+    rpc BidStream(stream BidStreamRequest) returns (stream BidStreamReply) {}
+}
