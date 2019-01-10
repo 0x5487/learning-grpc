@@ -63,6 +63,21 @@ func main() {
 	}
 	log.Infof("Greeting: %s", r.Message)
 
+	// health check
+	healthCheckRequest := &helloworldProto.HealthCheckRequest{
+		Service: "aaa",
+	}
+	healthCheckResp, err := c.Check(ctx, healthCheckRequest)
+	if err != nil {
+		log.Errorf("Error: %v", err)
+	}
+
+	log.Debug("healthCheckResp : %s", healthCheckResp.Status)
+}
+
+func testChat(conn *grpc.ClientConn) {
+	ctx := context.Background()
+
 	// chat client
 	client := helloworldProto.NewChatClient(conn)
 	stream, err := client.BidStream(ctx)
@@ -73,7 +88,7 @@ func main() {
 	// send message to server
 	go func() {
 		for {
-			err := stream.Send(&helloworldProto.Request{Input: "你好"})
+			err := stream.Send(&helloworldProto.BidStreamRequest{Input: "你好"})
 			if err != nil {
 				return
 			}

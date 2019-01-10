@@ -44,6 +44,12 @@ func (s *Server) SayHello(ctx context.Context, in *proto.HelloRequest) (*proto.H
 	return &proto.HelloReply{Message: "Hello " + in.Name}, nil
 }
 
+func (s *Server) Check(ctx context.Context, in *proto.HealthCheckRequest) (*proto.HealthCheckResponse, error) {
+	return &proto.HealthCheckResponse{
+		Status: proto.HealthCheckResponse_SERVING,
+	}, nil
+}
+
 func (s *Server) BidStream(stream proto.Chat_BidStreamServer) error {
 	ctx := stream.Context()
 	for {
@@ -66,7 +72,7 @@ func (s *Server) BidStream(stream proto.Chat_BidStreamServer) error {
 			switch message.Input {
 			case "結束對話\n":
 				log.Info("收到'結束對話'指令")
-				if err := stream.Send(&proto.Response{Output: "收到結束指令"}); err != nil {
+				if err := stream.Send(&proto.BidStreamReply{Output: "收到結束指令"}); err != nil {
 					return err
 				}
 				// 收到結束指令時，通過 return nil 終止雙向數據流
@@ -75,14 +81,14 @@ func (s *Server) BidStream(stream proto.Chat_BidStreamServer) error {
 				log.Info("收到'返回數據流'指令")
 				// 收到 收到'返回數據流'指令， 連續返回 10 條數據
 				for i := 0; i < 10; i++ {
-					if err := stream.Send(&proto.Response{Output: "數據流 #" + strconv.Itoa(i)}); err != nil {
+					if err := stream.Send(&proto.BidStreamReply{Output: "數據流 #" + strconv.Itoa(i)}); err != nil {
 						return err
 					}
 				}
 			default:
 				// 缺省情況下， 返回 '服務端返回: ' + 輸入信息
 				log.Info("[收到消息]: %s", message.Input)
-				if err := stream.Send(&proto.Response{Output: "服務端返回: " + message.Input}); err != nil {
+				if err := stream.Send(&proto.BidStreamReply{Output: "服務端返回: " + message.Input}); err != nil {
 					return err
 				}
 			}
