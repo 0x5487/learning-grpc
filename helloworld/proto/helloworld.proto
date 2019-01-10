@@ -30,9 +30,9 @@ message HealthCheckResponse {
 
 // The greeting service definition.
 service Greeter {
-  rpc Check(HealthCheckRequest) returns (HealthCheckResponse) {}
+  rpc Check(HealthCheckRequest) returns (HealthCheckResponse);
   // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+  rpc SayHello (HelloRequest) returns (HelloReply);
 }
 
 
@@ -46,5 +46,5 @@ message BidStreamReply {
 }
 
 service Chat {    
-    rpc BidStream(stream BidStreamRequest) returns (stream BidStreamReply) {}
+    rpc BidStream(stream BidStreamRequest) returns (stream BidStreamReply);
 }
