@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	address     = "localhost:10051"
+	address     = "localhost:10080"
 	defaultName = "Jason"
 )
 
@@ -50,6 +50,7 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
+
 	c := helloworldProto.NewGreeterClient(conn)
 
 	// Contact the server and print out its response.
@@ -73,6 +74,19 @@ func main() {
 	}
 
 	log.Debug("healthCheckResp : %s", healthCheckResp.Status)
+}
+
+func testPing(conn *grpc.ClientConn) {
+	ctx := context.Background()
+
+	client := helloworldProto.NewPingPongClient(conn)
+
+	pingRequest := &helloworldProto.PingRequest{Message: "Ping"}
+	pongReply, err := client.Ping(ctx, pingRequest)
+	if err != nil {
+		log.Errorf("test ping err: %v", err)
+	}
+	log.Debugf(pongReply.Message)
 }
 
 func testChat(conn *grpc.ClientConn) {

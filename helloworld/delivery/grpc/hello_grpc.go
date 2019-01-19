@@ -5,9 +5,8 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/jasonsoft/log"
-
 	proto "github.com/jasonsoft/grpc-example/helloworld/proto"
+	"github.com/jasonsoft/log"
 )
 
 type Server struct{}

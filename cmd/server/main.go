@@ -25,6 +25,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+
 	s := grpc.NewServer()
 
 	server := helloWorldGRPC.NewServer()
