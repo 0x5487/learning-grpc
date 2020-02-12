@@ -1,4 +1,4 @@
-1. Install [protobuf compiler](https://github.com/google/protobuf/blob/master/README.md#protocol-compiler-installation)
+1. Install grpc[https://grpc.io/docs/quickstart/go/]
 
 1. Install the protoc Go plugin
 
@@ -23,6 +23,6 @@
    1. no time struct in protobuf
    2. 
 
+   #### References
 
-   #### Reference
-   https://segmentfault.com/a/1190000016601810
+   #### https://segmentfault.com/a/1190000016601810
