@@ -1,13 +1,48 @@
 package grpc
 
 import (
+	"google.golang.org/grpc/metadata"
+	"github.com/jasonsoft/grpc-example/types"
+	"fmt"
+	"google.golang.org/grpc/status"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc"
 	"context"
 	"io"
 	"strconv"
 
 	proto "github.com/jasonsoft/grpc-example/helloworld/proto"
+	//epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"github.com/jasonsoft/log"
 )
+
+// UnaryServerInterceptor returns a new unary server interceptor for panic recovery.
+func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
+
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (_ interface{}, err error) {
+		defer func() {
+			if r := recover(); r != nil {
+				// unknown error.  hanlder status code is 500 series.
+				logger := log.StackTrace()
+				err, ok := r.(error)
+				if !ok {
+					if err == nil {
+						err = fmt.Errorf("%v", r)
+					} else {
+						err = fmt.Errorf("%v", err)
+					}
+				}
+
+				logger.Errorf("unknown error: %v", err)
+				err = status.Error(codes.Unknown, err.Error())
+			}
+		}()
+
+		return handler(ctx, req)
+
+	}
+}
+
 
 type Server struct{}
 
@@ -17,30 +52,41 @@ func NewServer() *Server {
 
 // SayHello implements helloworld.GreeterServer
 func (s *Server) SayHello(ctx context.Context, in *proto.HelloRequest) (*proto.HelloReply, error) {
-	// md, ok := metadata.FromIncomingContext(ctx)
-	// if !ok {
-	// 	return nil, grpc.Errorf(codes.Unauthenticated, "無Token認證信息")
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, grpc.Errorf(codes.Unauthenticated, "無Token認證信息")
+	}
+
+	var (
+		userID string
+		roles  string
+	)
+
+	if val, ok := md["user_id"]; ok {
+		userID = val[0]
+	}
+
+	if val, ok := md["roles"]; ok {
+		roles = val[0]
+	}
+
+	log.Debugf("userID: %s roles: %s", userID, roles)
+	if userID != "jason" || roles != "admin" {
+		return nil, grpc.Errorf(codes.Unauthenticated, "wrong password")
+	}
+	err := daos.CreateAccount(ctx, account)
+	// appErr := types.AppError{
+	// 	ErrorCode: "404001",
+	// 	Message: "account was not found",
 	// }
+	if err != nil {
+		err := status.Error(codes.NotFound, appErr.Error())
+	}
 
-	// var (
-	// 	userID string
-	// 	roles  string
-	// )
 
-	// if val, ok := md["user_id"]; ok {
-	// 	userID = val[0]
-	// }
-
-	// if val, ok := md["roles"]; ok {
-	// 	roles = val[0]
-	// }
-
-	// log.Debugf("userID: %s roles: %s", userID, roles)
-	// if userID != "jason" || roles != "admin" {
-	// 	return nil, grpc.Errorf(codes.Unauthenticated, "wrong password")
-	// }
-
-	return &proto.HelloReply{Message: "Hello " + in.Name}, nil
+	err := status.Error(codes., appErr.Error())
+	return nil, err
+	//return &proto.HelloReply{Message: "Hello " + in.Name}, nil
 }
 
 func (s *Server) Check(ctx context.Context, in *proto.HealthCheckRequest) (*proto.HealthCheckResponse, error) {

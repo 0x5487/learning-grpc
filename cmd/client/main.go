@@ -1,6 +1,7 @@
 package main
 
 import (
+	"google.golang.org/grpc/status"
 	"context"
 	"io"
 	"os"
@@ -13,7 +14,7 @@ import (
 )
 
 const (
-	address     = "localhost:10080"
+	address     = "localhost:10051"
 	defaultName = "Jason"
 )
 
@@ -60,7 +61,8 @@ func main() {
 	}
 	r, err := c.SayHello(context.Background(), &helloworldProto.HelloRequest{Name: name})
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		s := status.Convert(err)
+		log.Fatalf("main: could not greet: code=> %d, message => %s, ", s.Code() , s.Message())
 	}
 	log.Infof("Greeting: %s", r.Message)
 

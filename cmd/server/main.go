@@ -3,6 +3,7 @@ package main
 import (
 	"net"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware"
 	helloWorldGRPC "github.com/jasonsoft/grpc-example/helloworld/delivery/grpc"
 	helloworldProto "github.com/jasonsoft/grpc-example/helloworld/proto"
 	"github.com/jasonsoft/log"
@@ -26,7 +27,11 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			helloWorldGRPC.UnaryServerInterceptor(),
+		)),
+	)
 
 	server := helloWorldGRPC.NewServer()
 	helloworldProto.RegisterGreeterServer(s, server)
