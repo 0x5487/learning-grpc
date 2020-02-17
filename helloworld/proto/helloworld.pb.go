@@ -7,6 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -24,40 +25,13 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type HealthCheckResponse_ServingStatus int32
-
-const (
-	HealthCheckResponse_UNKNOWN     HealthCheckResponse_ServingStatus = 0
-	HealthCheckResponse_SERVING     HealthCheckResponse_ServingStatus = 1
-	HealthCheckResponse_NOT_SERVING HealthCheckResponse_ServingStatus = 2
-)
-
-var HealthCheckResponse_ServingStatus_name = map[int32]string{
-	0: "UNKNOWN",
-	1: "SERVING",
-	2: "NOT_SERVING",
-}
-
-var HealthCheckResponse_ServingStatus_value = map[string]int32{
-	"UNKNOWN":     0,
-	"SERVING":     1,
-	"NOT_SERVING": 2,
-}
-
-func (x HealthCheckResponse_ServingStatus) String() string {
-	return proto.EnumName(HealthCheckResponse_ServingStatus_name, int32(x))
-}
-
-func (HealthCheckResponse_ServingStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_641cff7980a2aacd, []int{3, 0}
-}
-
 // The request message containing the user's name.
 type HelloRequest struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Name                 string               `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	CreatedAt            *timestamp.Timestamp `protobuf:"bytes,2,opt,name=CreatedAt,proto3" json:"CreatedAt,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
+	XXX_unrecognized     []byte               `json:"-"`
+	XXX_sizecache        int32                `json:"-"`
 }
 
 func (m *HelloRequest) Reset()         { *m = HelloRequest{} }
@@ -90,6 +64,13 @@ func (m *HelloRequest) GetName() string {
 		return m.Name
 	}
 	return ""
+}
+
+func (m *HelloRequest) GetCreatedAt() *timestamp.Timestamp {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return nil
 }
 
 // The response message containing the greetings
@@ -132,84 +113,6 @@ func (m *HelloReply) GetMessage() string {
 	return ""
 }
 
-type HealthCheckRequest struct {
-	Service              string   `protobuf:"bytes,1,opt,name=service,proto3" json:"service,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *HealthCheckRequest) Reset()         { *m = HealthCheckRequest{} }
-func (m *HealthCheckRequest) String() string { return proto.CompactTextString(m) }
-func (*HealthCheckRequest) ProtoMessage()    {}
-func (*HealthCheckRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_641cff7980a2aacd, []int{2}
-}
-
-func (m *HealthCheckRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_HealthCheckRequest.Unmarshal(m, b)
-}
-func (m *HealthCheckRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_HealthCheckRequest.Marshal(b, m, deterministic)
-}
-func (m *HealthCheckRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HealthCheckRequest.Merge(m, src)
-}
-func (m *HealthCheckRequest) XXX_Size() int {
-	return xxx_messageInfo_HealthCheckRequest.Size(m)
-}
-func (m *HealthCheckRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_HealthCheckRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_HealthCheckRequest proto.InternalMessageInfo
-
-func (m *HealthCheckRequest) GetService() string {
-	if m != nil {
-		return m.Service
-	}
-	return ""
-}
-
-type HealthCheckResponse struct {
-	Status               HealthCheckResponse_ServingStatus `protobuf:"varint,1,opt,name=status,proto3,enum=proto.HealthCheckResponse_ServingStatus" json:"status,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                          `json:"-"`
-	XXX_unrecognized     []byte                            `json:"-"`
-	XXX_sizecache        int32                             `json:"-"`
-}
-
-func (m *HealthCheckResponse) Reset()         { *m = HealthCheckResponse{} }
-func (m *HealthCheckResponse) String() string { return proto.CompactTextString(m) }
-func (*HealthCheckResponse) ProtoMessage()    {}
-func (*HealthCheckResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_641cff7980a2aacd, []int{3}
-}
-
-func (m *HealthCheckResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_HealthCheckResponse.Unmarshal(m, b)
-}
-func (m *HealthCheckResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_HealthCheckResponse.Marshal(b, m, deterministic)
-}
-func (m *HealthCheckResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HealthCheckResponse.Merge(m, src)
-}
-func (m *HealthCheckResponse) XXX_Size() int {
-	return xxx_messageInfo_HealthCheckResponse.Size(m)
-}
-func (m *HealthCheckResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_HealthCheckResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_HealthCheckResponse proto.InternalMessageInfo
-
-func (m *HealthCheckResponse) GetStatus() HealthCheckResponse_ServingStatus {
-	if m != nil {
-		return m.Status
-	}
-	return HealthCheckResponse_UNKNOWN
-}
-
 // 請求數據 Request格式定義
 type BidStreamRequest struct {
 	Input                string   `protobuf:"bytes,1,opt,name=input,proto3" json:"input,omitempty"`
@@ -222,7 +125,7 @@ func (m *BidStreamRequest) Reset()         { *m = BidStreamRequest{} }
 func (m *BidStreamRequest) String() string { return proto.CompactTextString(m) }
 func (*BidStreamRequest) ProtoMessage()    {}
 func (*BidStreamRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_641cff7980a2aacd, []int{4}
+	return fileDescriptor_641cff7980a2aacd, []int{2}
 }
 
 func (m *BidStreamRequest) XXX_Unmarshal(b []byte) error {
@@ -262,7 +165,7 @@ func (m *BidStreamReply) Reset()         { *m = BidStreamReply{} }
 func (m *BidStreamReply) String() string { return proto.CompactTextString(m) }
 func (*BidStreamReply) ProtoMessage()    {}
 func (*BidStreamReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_641cff7980a2aacd, []int{5}
+	return fileDescriptor_641cff7980a2aacd, []int{3}
 }
 
 func (m *BidStreamReply) XXX_Unmarshal(b []byte) error {
@@ -291,11 +194,8 @@ func (m *BidStreamReply) GetOutput() string {
 }
 
 func init() {
-	proto.RegisterEnum("proto.HealthCheckResponse_ServingStatus", HealthCheckResponse_ServingStatus_name, HealthCheckResponse_ServingStatus_value)
 	proto.RegisterType((*HelloRequest)(nil), "proto.HelloRequest")
 	proto.RegisterType((*HelloReply)(nil), "proto.HelloReply")
-	proto.RegisterType((*HealthCheckRequest)(nil), "proto.HealthCheckRequest")
-	proto.RegisterType((*HealthCheckResponse)(nil), "proto.HealthCheckResponse")
 	proto.RegisterType((*BidStreamRequest)(nil), "proto.BidStreamRequest")
 	proto.RegisterType((*BidStreamReply)(nil), "proto.BidStreamReply")
 }
@@ -303,29 +203,24 @@ func init() {
 func init() { proto.RegisterFile("helloworld/proto/helloworld.proto", fileDescriptor_641cff7980a2aacd) }
 
 var fileDescriptor_641cff7980a2aacd = []byte{
-	// 339 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x91, 0xcd, 0x4e, 0x83, 0x40,
-	0x14, 0x85, 0xc5, 0xb4, 0xc5, 0xde, 0x6a, 0xad, 0xb7, 0xfe, 0x54, 0x56, 0x3a, 0x0b, 0xc3, 0x8a,
-	0x1a, 0xdc, 0xb9, 0x50, 0x63, 0x63, 0x5a, 0x63, 0x42, 0x13, 0xf0, 0x67, 0x69, 0xc6, 0x76, 0x52,
-	0x1a, 0xa7, 0x80, 0xcc, 0xa0, 0x61, 0xe1, 0x53, 0xf8, 0xc2, 0x86, 0x29, 0xb4, 0xa2, 0x75, 0x05,
-	0xe7, 0x9c, 0xef, 0x0e, 0x73, 0xb8, 0x70, 0xec, 0x33, 0xce, 0xc3, 0x8f, 0x30, 0xe6, 0xe3, 0x6e,
-	0x14, 0x87, 0x32, 0xec, 0x2e, 0x0d, 0x4b, 0x19, 0x58, 0x55, 0x0f, 0x42, 0x60, 0x73, 0x90, 0x45,
-	0x2e, 0x7b, 0x4b, 0x98, 0x90, 0x88, 0x50, 0x09, 0xe8, 0x8c, 0x75, 0xb4, 0x23, 0xcd, 0xac, 0xbb,
-	0xea, 0x9d, 0x9c, 0x00, 0xe4, 0x4c, 0xc4, 0x53, 0xec, 0x80, 0x3e, 0x63, 0x42, 0xd0, 0x49, 0x01,
-	0x15, 0x92, 0x58, 0x80, 0x03, 0x46, 0xb9, 0xf4, 0x7b, 0x3e, 0x1b, 0xbd, 0x16, 0x27, 0x76, 0x40,
-	0x17, 0x2c, 0x7e, 0x9f, 0x8e, 0x16, 0x7c, 0x2e, 0xc9, 0x97, 0x06, 0xed, 0xd2, 0x80, 0x88, 0xc2,
-	0x40, 0x30, 0xbc, 0x82, 0x9a, 0x90, 0x54, 0x26, 0x42, 0x0d, 0x34, 0x6d, 0x73, 0x7e, 0x65, 0x6b,
-	0x05, 0x6b, 0x79, 0xd9, 0x59, 0xc1, 0xc4, 0x53, 0xbc, 0x9b, 0xcf, 0x91, 0x73, 0xd8, 0x2a, 0x05,
-	0xd8, 0x00, 0xfd, 0xc1, 0xb9, 0x73, 0x86, 0x4f, 0x4e, 0x6b, 0x2d, 0x13, 0xde, 0x8d, 0xfb, 0x78,
-	0xeb, 0xf4, 0x5b, 0x1a, 0x6e, 0x43, 0xc3, 0x19, 0xde, 0x3f, 0x17, 0xc6, 0x3a, 0x31, 0xa1, 0x75,
-	0x3d, 0x1d, 0x7b, 0x32, 0x66, 0x74, 0x56, 0x74, 0xd8, 0x85, 0xea, 0x34, 0x88, 0x12, 0x99, 0x37,
-	0x98, 0x0b, 0x62, 0x42, 0xf3, 0x07, 0x99, 0xfd, 0x9b, 0x7d, 0xa8, 0x85, 0x89, 0x5c, 0x82, 0xb9,
-	0xb2, 0x3f, 0x41, 0xef, 0xc7, 0x8c, 0x49, 0x16, 0xe3, 0x05, 0x54, 0x55, 0x03, 0x3c, 0x5c, 0xd5,
-	0x4a, 0x7d, 0xce, 0x30, 0xfe, 0x2f, 0x8c, 0x36, 0x6c, 0x78, 0x34, 0x55, 0xfb, 0xc0, 0xf6, 0x82,
-	0x5b, 0x6e, 0xd0, 0xd8, 0x29, 0x9b, 0x11, 0x4f, 0xed, 0x3e, 0x54, 0x7a, 0x3e, 0x95, 0x78, 0x09,
-	0xf5, 0xc5, 0x85, 0xf1, 0x20, 0xe7, 0x7e, 0x97, 0x35, 0xf6, 0xfe, 0x06, 0x11, 0x4f, 0x4d, 0xed,
-	0x54, 0x7b, 0xa9, 0xa9, 0xe4, 0xec, 0x3b, 0x00, 0x00, 0xff, 0xff, 0x4f, 0x6d, 0xdf, 0x57, 0x60,
-	0x02, 0x00, 0x00,
+	// 269 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x8f, 0x4d, 0x4f, 0x84, 0x30,
+	0x10, 0x86, 0x83, 0xd9, 0x0f, 0x19, 0x8d, 0xd1, 0xfa, 0x45, 0xb8, 0xb8, 0x72, 0x30, 0x9c, 0xc0,
+	0xe0, 0xc5, 0x8b, 0x31, 0xba, 0x87, 0xf5, 0xcc, 0x7a, 0xf4, 0xd2, 0x0d, 0x23, 0x4b, 0x52, 0xb6,
+	0xb5, 0x0c, 0x31, 0xfc, 0x7b, 0xb3, 0x2d, 0x95, 0xd5, 0x3d, 0xc1, 0xbc, 0xf3, 0xf4, 0xe9, 0x5b,
+	0xb8, 0x5d, 0xa3, 0x10, 0xf2, 0x5b, 0x6a, 0x51, 0xa4, 0x4a, 0x4b, 0x92, 0xe9, 0x10, 0x24, 0x26,
+	0x60, 0x63, 0xf3, 0x09, 0x6f, 0x4a, 0x29, 0x4b, 0x81, 0x96, 0x5a, 0xb5, 0x9f, 0x29, 0x55, 0x35,
+	0x36, 0xc4, 0x6b, 0x65, 0xb9, 0xe8, 0x03, 0x8e, 0xdf, 0xb6, 0x67, 0x73, 0xfc, 0x6a, 0xb1, 0x21,
+	0xc6, 0x60, 0xb4, 0xe1, 0x35, 0x06, 0xde, 0xcc, 0x8b, 0xfd, 0xdc, 0xfc, 0xb3, 0x47, 0xf0, 0xe7,
+	0x1a, 0x39, 0x61, 0xf1, 0x42, 0xc1, 0xc1, 0xcc, 0x8b, 0x8f, 0xb2, 0x30, 0xb1, 0xe2, 0xc4, 0x89,
+	0x93, 0x77, 0x27, 0xce, 0x07, 0x38, 0xba, 0x03, 0xe8, 0xed, 0x4a, 0x74, 0x2c, 0x80, 0x69, 0x8d,
+	0x4d, 0xc3, 0x4b, 0xa7, 0x77, 0x63, 0x14, 0xc3, 0xe9, 0x6b, 0x55, 0x2c, 0x49, 0x23, 0xaf, 0x5d,
+	0x93, 0x0b, 0x18, 0x57, 0x1b, 0xd5, 0x52, 0xcf, 0xda, 0x21, 0x8a, 0xe1, 0x64, 0x87, 0xdc, 0x5a,
+	0xaf, 0x60, 0x22, 0x5b, 0x1a, 0xc0, 0x7e, 0xca, 0x9e, 0x60, 0xba, 0xd0, 0x88, 0x84, 0x9a, 0x65,
+	0x70, 0xb8, 0xe4, 0x9d, 0x69, 0xc2, 0xce, 0x6d, 0xe5, 0x64, 0xf7, 0xd5, 0xe1, 0xd9, 0xdf, 0x50,
+	0x89, 0x2e, 0x5b, 0xc0, 0x68, 0xbe, 0xe6, 0xc4, 0x9e, 0xc1, 0xff, 0xbd, 0x90, 0x5d, 0xf7, 0xdc,
+	0xff, 0xb2, 0xe1, 0xe5, 0xfe, 0x42, 0x89, 0x2e, 0xf6, 0xee, 0xbd, 0xd5, 0xc4, 0x6c, 0x1e, 0x7e,
+	0x02, 0x00, 0x00, 0xff, 0xff, 0x08, 0x96, 0x20, 0xe3, 0xb5, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -340,7 +235,6 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type GreeterClient interface {
-	Check(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error)
 	// Sends a greeting
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 }
@@ -351,15 +245,6 @@ type greeterClient struct {
 
 func NewGreeterClient(cc grpc.ClientConnInterface) GreeterClient {
 	return &greeterClient{cc}
-}
-
-func (c *greeterClient) Check(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
-	out := new(HealthCheckResponse)
-	err := c.cc.Invoke(ctx, "/proto.Greeter/Check", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
@@ -373,7 +258,6 @@ func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...
 
 // GreeterServer is the server API for Greeter service.
 type GreeterServer interface {
-	Check(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error)
 	// Sends a greeting
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
 }
@@ -382,33 +266,12 @@ type GreeterServer interface {
 type UnimplementedGreeterServer struct {
 }
 
-func (*UnimplementedGreeterServer) Check(ctx context.Context, req *HealthCheckRequest) (*HealthCheckResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Check not implemented")
-}
 func (*UnimplementedGreeterServer) SayHello(ctx context.Context, req *HelloRequest) (*HelloReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
 }
 
 func RegisterGreeterServer(s *grpc.Server, srv GreeterServer) {
 	s.RegisterService(&_Greeter_serviceDesc, srv)
-}
-
-func _Greeter_Check_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HealthCheckRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GreeterServer).Check(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Greeter/Check",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreeterServer).Check(ctx, req.(*HealthCheckRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Greeter_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -433,10 +296,6 @@ var _Greeter_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "proto.Greeter",
 	HandlerType: (*GreeterServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Check",
-			Handler:    _Greeter_Check_Handler,
-		},
 		{
 			MethodName: "SayHello",
 			Handler:    _Greeter_SayHello_Handler,

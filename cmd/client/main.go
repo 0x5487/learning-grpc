@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/status"
 
 	helloworldProto "github.com/jasonsoft/grpc-example/helloworld/proto"
@@ -16,7 +17,7 @@ import (
 
 const (
 	address     = "localhost:10051"
-	defaultName = "Jason"
+	defaultName = "error"
 )
 
 // customCredential 自定義認證
@@ -34,18 +35,19 @@ func (c customCredential) RequireTransportSecurity() bool {
 }
 
 func main() {
-	ctx := context.Background()
-
 	clog := console.New()
 	log.RegisterHandler(clog, log.AllLevels...)
 
-	// Set up a connection to the server.
-	var opts []grpc.DialOption
-	opts = append(opts, grpc.WithInsecure())
-	// 使用自定義認證
-	opts = append(opts, grpc.WithPerRPCCredentials(new(customCredential)))
+	conn, err := grpc.Dial(address,
+		grpc.WithInsecure(),
+		grpc.WithPerRPCCredentials(new(customCredential)), // 使用自定義認證
+		grpc.WithKeepaliveParams(keepalive.ClientParameters{
+			Time:                5,    // send pings every 5 seconds if there is no activity
+			Timeout:             5,    // wait 5 second for ping ack before considering the connection dead
+			PermitWithoutStream: true, // send pings even without active streams
+		}),
+	)
 
-	conn, err := grpc.Dial(address, opts...)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -60,34 +62,10 @@ func main() {
 	}
 	r, err := c.SayHello(context.Background(), &helloworldProto.HelloRequest{Name: name})
 	if err != nil {
-		s := status.Convert(err)
-		log.Fatalf("main: could not greet: code=> %d, message => %s, ", s.Code(), s.Message())
+		grpcErr := status.Convert(err)
+		log.Fatalf("main: could not greet: code=> %d, message => %s, ", grpcErr.Code(), grpcErr.Message())
 	}
 	log.Infof("Greeting: %s", r.Message)
-
-	// health check
-	healthCheckRequest := &helloworldProto.HealthCheckRequest{
-		Service: "aaa",
-	}
-	healthCheckResp, err := c.Check(ctx, healthCheckRequest)
-	if err != nil {
-		log.Errorf("Error: %v", err)
-	}
-
-	log.Debugf("healthCheckResp : %s", healthCheckResp.Status)
-}
-
-func testPing(conn *grpc.ClientConn) {
-	ctx := context.Background()
-
-	client := helloworldProto.NewPingPongClient(conn)
-
-	pingRequest := &helloworldProto.PingRequest{Message: "Ping"}
-	pongReply, err := client.Ping(ctx, pingRequest)
-	if err != nil {
-		log.Errorf("test ping err: %v", err)
-	}
-	log.Debugf(pongReply.Message)
 }
 
 func testChat(conn *grpc.ClientConn) {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"time"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	helloWorldGRPC "github.com/jasonsoft/grpc-example/helloworld/delivery/grpc"
@@ -9,6 +10,7 @@ import (
 	"github.com/jasonsoft/log"
 	"github.com/jasonsoft/log/handlers/console"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
 )
 
 const (
@@ -31,8 +33,20 @@ func main() {
 	}
 
 	s := grpc.NewServer(
+		grpc.KeepaliveParams(
+			keepalive.ServerParameters{
+				Time:    (time.Duration(5) * time.Second), // Ping the client if it is idle for 5 seconds to ensure the connection is still active
+				Timeout: (time.Duration(5) * time.Second), // Wait 5 second for the ping ack before assuming the connection is dead
+			},
+		),
+		grpc.KeepaliveEnforcementPolicy(
+			keepalive.EnforcementPolicy{
+				MinTime:             (time.Duration(2) * time.Second), // If a client pings more than once every 2 seconds, terminate the connection
+				PermitWithoutStream: true,                             // Allow pings even when there are no active streams
+			},
+		),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			helloWorldGRPC.UnaryServerInterceptor(),
+			helloWorldGRPC.ErrorInterceptor(),
 		)),
 	)
 

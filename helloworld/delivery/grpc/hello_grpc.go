@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -12,14 +11,20 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 
 	proto "github.com/jasonsoft/grpc-example/helloworld/proto"
 	//epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"github.com/jasonsoft/log"
+	errPKG "github.com/rotisserie/eris"
 )
 
-// UnaryServerInterceptor returns a new unary server interceptor for panic recovery.
-func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
+var (
+	ErrNotFound = errPKG.New("not found")
+)
+
+// ErrorInterceptor returns a new unary server interceptor for panic recovery.
+func ErrorInterceptor() grpc.UnaryServerInterceptor {
 
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (_ interface{}, err error) {
 		defer func() {
@@ -38,8 +43,14 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 		result, err := handler(ctx, req)
 		if err != nil {
+			// centralized error
 			log.WithError(err).Errorf("unary error")
+
+			if errPKG.Is(err, ErrNotFound) {
+				err = status.Error(codes.NotFound, "not found")
+			}
 		}
+
 		return result, err
 
 	}
@@ -72,24 +83,22 @@ func (s *Server) SayHello(ctx context.Context, in *proto.HelloRequest) (*proto.H
 	}
 
 	log.Debugf("userID: %s roles: %s", userID, roles)
+
 	if userID != "jason" || roles != "admin" {
 		return nil, grpc.Errorf(codes.Unauthenticated, "wrong password")
 	}
 
-	err := errors.New("not found")
+	if in.Name == "error" {
+		return nil, ErrNotFound
+	}
+
 	// if err != nil {
 	// 	err = status.Error(codes.NotFound, appErr.Error())
 	// }
 
 	// err = status.Error(codes.NotFound, "not found")
-	return nil, err
-	//return &proto.HelloReply{Message: "Hello " + in.Name}, nil
-}
 
-func (s *Server) Check(ctx context.Context, in *proto.HealthCheckRequest) (*proto.HealthCheckResponse, error) {
-	return &proto.HealthCheckResponse{
-		Status: proto.HealthCheckResponse_SERVING,
-	}, nil
+	return &proto.HelloReply{Message: "Hello " + in.Name}, nil
 }
 
 func (s *Server) BidStream(stream proto.Chat_BidStreamServer) error {
