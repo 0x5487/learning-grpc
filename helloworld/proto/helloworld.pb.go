@@ -3,13 +3,14 @@
 
 package proto
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
-
 import (
-	context "golang.org/x/net/context"
+	context "context"
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -21,7 +22,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type HealthCheckResponse_ServingStatus int32
 
@@ -36,6 +37,7 @@ var HealthCheckResponse_ServingStatus_name = map[int32]string{
 	1: "SERVING",
 	2: "NOT_SERVING",
 }
+
 var HealthCheckResponse_ServingStatus_value = map[string]int32{
 	"UNKNOWN":     0,
 	"SERVING":     1,
@@ -45,8 +47,9 @@ var HealthCheckResponse_ServingStatus_value = map[string]int32{
 func (x HealthCheckResponse_ServingStatus) String() string {
 	return proto.EnumName(HealthCheckResponse_ServingStatus_name, int32(x))
 }
+
 func (HealthCheckResponse_ServingStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_54041d9e4c5b6282, []int{3, 0}
+	return fileDescriptor_641cff7980a2aacd, []int{3, 0}
 }
 
 // The request message containing the user's name.
@@ -61,16 +64,17 @@ func (m *HelloRequest) Reset()         { *m = HelloRequest{} }
 func (m *HelloRequest) String() string { return proto.CompactTextString(m) }
 func (*HelloRequest) ProtoMessage()    {}
 func (*HelloRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_54041d9e4c5b6282, []int{0}
+	return fileDescriptor_641cff7980a2aacd, []int{0}
 }
+
 func (m *HelloRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HelloRequest.Unmarshal(m, b)
 }
 func (m *HelloRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_HelloRequest.Marshal(b, m, deterministic)
 }
-func (dst *HelloRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HelloRequest.Merge(dst, src)
+func (m *HelloRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HelloRequest.Merge(m, src)
 }
 func (m *HelloRequest) XXX_Size() int {
 	return xxx_messageInfo_HelloRequest.Size(m)
@@ -100,16 +104,17 @@ func (m *HelloReply) Reset()         { *m = HelloReply{} }
 func (m *HelloReply) String() string { return proto.CompactTextString(m) }
 func (*HelloReply) ProtoMessage()    {}
 func (*HelloReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_54041d9e4c5b6282, []int{1}
+	return fileDescriptor_641cff7980a2aacd, []int{1}
 }
+
 func (m *HelloReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HelloReply.Unmarshal(m, b)
 }
 func (m *HelloReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_HelloReply.Marshal(b, m, deterministic)
 }
-func (dst *HelloReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HelloReply.Merge(dst, src)
+func (m *HelloReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HelloReply.Merge(m, src)
 }
 func (m *HelloReply) XXX_Size() int {
 	return xxx_messageInfo_HelloReply.Size(m)
@@ -138,16 +143,17 @@ func (m *HealthCheckRequest) Reset()         { *m = HealthCheckRequest{} }
 func (m *HealthCheckRequest) String() string { return proto.CompactTextString(m) }
 func (*HealthCheckRequest) ProtoMessage()    {}
 func (*HealthCheckRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_54041d9e4c5b6282, []int{2}
+	return fileDescriptor_641cff7980a2aacd, []int{2}
 }
+
 func (m *HealthCheckRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HealthCheckRequest.Unmarshal(m, b)
 }
 func (m *HealthCheckRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_HealthCheckRequest.Marshal(b, m, deterministic)
 }
-func (dst *HealthCheckRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HealthCheckRequest.Merge(dst, src)
+func (m *HealthCheckRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HealthCheckRequest.Merge(m, src)
 }
 func (m *HealthCheckRequest) XXX_Size() int {
 	return xxx_messageInfo_HealthCheckRequest.Size(m)
@@ -176,16 +182,17 @@ func (m *HealthCheckResponse) Reset()         { *m = HealthCheckResponse{} }
 func (m *HealthCheckResponse) String() string { return proto.CompactTextString(m) }
 func (*HealthCheckResponse) ProtoMessage()    {}
 func (*HealthCheckResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_54041d9e4c5b6282, []int{3}
+	return fileDescriptor_641cff7980a2aacd, []int{3}
 }
+
 func (m *HealthCheckResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HealthCheckResponse.Unmarshal(m, b)
 }
 func (m *HealthCheckResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_HealthCheckResponse.Marshal(b, m, deterministic)
 }
-func (dst *HealthCheckResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HealthCheckResponse.Merge(dst, src)
+func (m *HealthCheckResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HealthCheckResponse.Merge(m, src)
 }
 func (m *HealthCheckResponse) XXX_Size() int {
 	return xxx_messageInfo_HealthCheckResponse.Size(m)
@@ -215,16 +222,17 @@ func (m *BidStreamRequest) Reset()         { *m = BidStreamRequest{} }
 func (m *BidStreamRequest) String() string { return proto.CompactTextString(m) }
 func (*BidStreamRequest) ProtoMessage()    {}
 func (*BidStreamRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_54041d9e4c5b6282, []int{4}
+	return fileDescriptor_641cff7980a2aacd, []int{4}
 }
+
 func (m *BidStreamRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BidStreamRequest.Unmarshal(m, b)
 }
 func (m *BidStreamRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BidStreamRequest.Marshal(b, m, deterministic)
 }
-func (dst *BidStreamRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BidStreamRequest.Merge(dst, src)
+func (m *BidStreamRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BidStreamRequest.Merge(m, src)
 }
 func (m *BidStreamRequest) XXX_Size() int {
 	return xxx_messageInfo_BidStreamRequest.Size(m)
@@ -254,16 +262,17 @@ func (m *BidStreamReply) Reset()         { *m = BidStreamReply{} }
 func (m *BidStreamReply) String() string { return proto.CompactTextString(m) }
 func (*BidStreamReply) ProtoMessage()    {}
 func (*BidStreamReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_helloworld_54041d9e4c5b6282, []int{5}
+	return fileDescriptor_641cff7980a2aacd, []int{5}
 }
+
 func (m *BidStreamReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BidStreamReply.Unmarshal(m, b)
 }
 func (m *BidStreamReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BidStreamReply.Marshal(b, m, deterministic)
 }
-func (dst *BidStreamReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BidStreamReply.Merge(dst, src)
+func (m *BidStreamReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BidStreamReply.Merge(m, src)
 }
 func (m *BidStreamReply) XXX_Size() int {
 	return xxx_messageInfo_BidStreamReply.Size(m)
@@ -282,22 +291,50 @@ func (m *BidStreamReply) GetOutput() string {
 }
 
 func init() {
+	proto.RegisterEnum("proto.HealthCheckResponse_ServingStatus", HealthCheckResponse_ServingStatus_name, HealthCheckResponse_ServingStatus_value)
 	proto.RegisterType((*HelloRequest)(nil), "proto.HelloRequest")
 	proto.RegisterType((*HelloReply)(nil), "proto.HelloReply")
 	proto.RegisterType((*HealthCheckRequest)(nil), "proto.HealthCheckRequest")
 	proto.RegisterType((*HealthCheckResponse)(nil), "proto.HealthCheckResponse")
 	proto.RegisterType((*BidStreamRequest)(nil), "proto.BidStreamRequest")
 	proto.RegisterType((*BidStreamReply)(nil), "proto.BidStreamReply")
-	proto.RegisterEnum("proto.HealthCheckResponse_ServingStatus", HealthCheckResponse_ServingStatus_name, HealthCheckResponse_ServingStatus_value)
+}
+
+func init() { proto.RegisterFile("helloworld/proto/helloworld.proto", fileDescriptor_641cff7980a2aacd) }
+
+var fileDescriptor_641cff7980a2aacd = []byte{
+	// 339 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x91, 0xcd, 0x4e, 0x83, 0x40,
+	0x14, 0x85, 0xc5, 0xb4, 0xc5, 0xde, 0x6a, 0xad, 0xb7, 0xfe, 0x54, 0x56, 0x3a, 0x0b, 0xc3, 0x8a,
+	0x1a, 0xdc, 0xb9, 0x50, 0x63, 0x63, 0x5a, 0x63, 0x42, 0x13, 0xf0, 0x67, 0x69, 0xc6, 0x76, 0x52,
+	0x1a, 0xa7, 0x80, 0xcc, 0xa0, 0x61, 0xe1, 0x53, 0xf8, 0xc2, 0x86, 0x29, 0xb4, 0xa2, 0x75, 0x05,
+	0xe7, 0x9c, 0xef, 0x0e, 0x73, 0xb8, 0x70, 0xec, 0x33, 0xce, 0xc3, 0x8f, 0x30, 0xe6, 0xe3, 0x6e,
+	0x14, 0x87, 0x32, 0xec, 0x2e, 0x0d, 0x4b, 0x19, 0x58, 0x55, 0x0f, 0x42, 0x60, 0x73, 0x90, 0x45,
+	0x2e, 0x7b, 0x4b, 0x98, 0x90, 0x88, 0x50, 0x09, 0xe8, 0x8c, 0x75, 0xb4, 0x23, 0xcd, 0xac, 0xbb,
+	0xea, 0x9d, 0x9c, 0x00, 0xe4, 0x4c, 0xc4, 0x53, 0xec, 0x80, 0x3e, 0x63, 0x42, 0xd0, 0x49, 0x01,
+	0x15, 0x92, 0x58, 0x80, 0x03, 0x46, 0xb9, 0xf4, 0x7b, 0x3e, 0x1b, 0xbd, 0x16, 0x27, 0x76, 0x40,
+	0x17, 0x2c, 0x7e, 0x9f, 0x8e, 0x16, 0x7c, 0x2e, 0xc9, 0x97, 0x06, 0xed, 0xd2, 0x80, 0x88, 0xc2,
+	0x40, 0x30, 0xbc, 0x82, 0x9a, 0x90, 0x54, 0x26, 0x42, 0x0d, 0x34, 0x6d, 0x73, 0x7e, 0x65, 0x6b,
+	0x05, 0x6b, 0x79, 0xd9, 0x59, 0xc1, 0xc4, 0x53, 0xbc, 0x9b, 0xcf, 0x91, 0x73, 0xd8, 0x2a, 0x05,
+	0xd8, 0x00, 0xfd, 0xc1, 0xb9, 0x73, 0x86, 0x4f, 0x4e, 0x6b, 0x2d, 0x13, 0xde, 0x8d, 0xfb, 0x78,
+	0xeb, 0xf4, 0x5b, 0x1a, 0x6e, 0x43, 0xc3, 0x19, 0xde, 0x3f, 0x17, 0xc6, 0x3a, 0x31, 0xa1, 0x75,
+	0x3d, 0x1d, 0x7b, 0x32, 0x66, 0x74, 0x56, 0x74, 0xd8, 0x85, 0xea, 0x34, 0x88, 0x12, 0x99, 0x37,
+	0x98, 0x0b, 0x62, 0x42, 0xf3, 0x07, 0x99, 0xfd, 0x9b, 0x7d, 0xa8, 0x85, 0x89, 0x5c, 0x82, 0xb9,
+	0xb2, 0x3f, 0x41, 0xef, 0xc7, 0x8c, 0x49, 0x16, 0xe3, 0x05, 0x54, 0x55, 0x03, 0x3c, 0x5c, 0xd5,
+	0x4a, 0x7d, 0xce, 0x30, 0xfe, 0x2f, 0x8c, 0x36, 0x6c, 0x78, 0x34, 0x55, 0xfb, 0xc0, 0xf6, 0x82,
+	0x5b, 0x6e, 0xd0, 0xd8, 0x29, 0x9b, 0x11, 0x4f, 0xed, 0x3e, 0x54, 0x7a, 0x3e, 0x95, 0x78, 0x09,
+	0xf5, 0xc5, 0x85, 0xf1, 0x20, 0xe7, 0x7e, 0x97, 0x35, 0xf6, 0xfe, 0x06, 0x11, 0x4f, 0x4d, 0xed,
+	0x54, 0x7b, 0xa9, 0xa9, 0xe4, 0xec, 0x3b, 0x00, 0x00, 0xff, 0xff, 0x4f, 0x6d, 0xdf, 0x57, 0x60,
+	0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // GreeterClient is the client API for Greeter service.
 //
@@ -309,10 +346,10 @@ type GreeterClient interface {
 }
 
 type greeterClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewGreeterClient(cc *grpc.ClientConn) GreeterClient {
+func NewGreeterClient(cc grpc.ClientConnInterface) GreeterClient {
 	return &greeterClient{cc}
 }
 
@@ -339,6 +376,17 @@ type GreeterServer interface {
 	Check(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error)
 	// Sends a greeting
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
+}
+
+// UnimplementedGreeterServer can be embedded to have forward compatible implementations.
+type UnimplementedGreeterServer struct {
+}
+
+func (*UnimplementedGreeterServer) Check(ctx context.Context, req *HealthCheckRequest) (*HealthCheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Check not implemented")
+}
+func (*UnimplementedGreeterServer) SayHello(ctx context.Context, req *HelloRequest) (*HelloReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
 }
 
 func RegisterGreeterServer(s *grpc.Server, srv GreeterServer) {
@@ -406,10 +454,10 @@ type ChatClient interface {
 }
 
 type chatClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewChatClient(cc *grpc.ClientConn) ChatClient {
+func NewChatClient(cc grpc.ClientConnInterface) ChatClient {
 	return &chatClient{cc}
 }
 
@@ -447,6 +495,14 @@ func (x *chatBidStreamClient) Recv() (*BidStreamReply, error) {
 // ChatServer is the server API for Chat service.
 type ChatServer interface {
 	BidStream(Chat_BidStreamServer) error
+}
+
+// UnimplementedChatServer can be embedded to have forward compatible implementations.
+type UnimplementedChatServer struct {
+}
+
+func (*UnimplementedChatServer) BidStream(srv Chat_BidStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method BidStream not implemented")
 }
 
 func RegisterChatServer(s *grpc.Server, srv ChatServer) {
@@ -492,34 +548,4 @@ var _Chat_serviceDesc = grpc.ServiceDesc{
 		},
 	},
 	Metadata: "helloworld/proto/helloworld.proto",
-}
-
-func init() {
-	proto.RegisterFile("helloworld/proto/helloworld.proto", fileDescriptor_helloworld_54041d9e4c5b6282)
-}
-
-var fileDescriptor_helloworld_54041d9e4c5b6282 = []byte{
-	// 339 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x91, 0xcd, 0x4e, 0x83, 0x40,
-	0x14, 0x85, 0xc5, 0xb4, 0xc5, 0xde, 0x6a, 0xad, 0xb7, 0xfe, 0x54, 0x56, 0x3a, 0x0b, 0xc3, 0x8a,
-	0x1a, 0xdc, 0xb9, 0x50, 0x63, 0x63, 0x5a, 0x63, 0x42, 0x13, 0xf0, 0x67, 0x69, 0xc6, 0x76, 0x52,
-	0x1a, 0xa7, 0x80, 0xcc, 0xa0, 0x61, 0xe1, 0x53, 0xf8, 0xc2, 0x86, 0x29, 0xb4, 0xa2, 0x75, 0x05,
-	0xe7, 0x9c, 0xef, 0x0e, 0x73, 0xb8, 0x70, 0xec, 0x33, 0xce, 0xc3, 0x8f, 0x30, 0xe6, 0xe3, 0x6e,
-	0x14, 0x87, 0x32, 0xec, 0x2e, 0x0d, 0x4b, 0x19, 0x58, 0x55, 0x0f, 0x42, 0x60, 0x73, 0x90, 0x45,
-	0x2e, 0x7b, 0x4b, 0x98, 0x90, 0x88, 0x50, 0x09, 0xe8, 0x8c, 0x75, 0xb4, 0x23, 0xcd, 0xac, 0xbb,
-	0xea, 0x9d, 0x9c, 0x00, 0xe4, 0x4c, 0xc4, 0x53, 0xec, 0x80, 0x3e, 0x63, 0x42, 0xd0, 0x49, 0x01,
-	0x15, 0x92, 0x58, 0x80, 0x03, 0x46, 0xb9, 0xf4, 0x7b, 0x3e, 0x1b, 0xbd, 0x16, 0x27, 0x76, 0x40,
-	0x17, 0x2c, 0x7e, 0x9f, 0x8e, 0x16, 0x7c, 0x2e, 0xc9, 0x97, 0x06, 0xed, 0xd2, 0x80, 0x88, 0xc2,
-	0x40, 0x30, 0xbc, 0x82, 0x9a, 0x90, 0x54, 0x26, 0x42, 0x0d, 0x34, 0x6d, 0x73, 0x7e, 0x65, 0x6b,
-	0x05, 0x6b, 0x79, 0xd9, 0x59, 0xc1, 0xc4, 0x53, 0xbc, 0x9b, 0xcf, 0x91, 0x73, 0xd8, 0x2a, 0x05,
-	0xd8, 0x00, 0xfd, 0xc1, 0xb9, 0x73, 0x86, 0x4f, 0x4e, 0x6b, 0x2d, 0x13, 0xde, 0x8d, 0xfb, 0x78,
-	0xeb, 0xf4, 0x5b, 0x1a, 0x6e, 0x43, 0xc3, 0x19, 0xde, 0x3f, 0x17, 0xc6, 0x3a, 0x31, 0xa1, 0x75,
-	0x3d, 0x1d, 0x7b, 0x32, 0x66, 0x74, 0x56, 0x74, 0xd8, 0x85, 0xea, 0x34, 0x88, 0x12, 0x99, 0x37,
-	0x98, 0x0b, 0x62, 0x42, 0xf3, 0x07, 0x99, 0xfd, 0x9b, 0x7d, 0xa8, 0x85, 0x89, 0x5c, 0x82, 0xb9,
-	0xb2, 0x3f, 0x41, 0xef, 0xc7, 0x8c, 0x49, 0x16, 0xe3, 0x05, 0x54, 0x55, 0x03, 0x3c, 0x5c, 0xd5,
-	0x4a, 0x7d, 0xce, 0x30, 0xfe, 0x2f, 0x8c, 0x36, 0x6c, 0x78, 0x34, 0x55, 0xfb, 0xc0, 0xf6, 0x82,
-	0x5b, 0x6e, 0xd0, 0xd8, 0x29, 0x9b, 0x11, 0x4f, 0xed, 0x3e, 0x54, 0x7a, 0x3e, 0x95, 0x78, 0x09,
-	0xf5, 0xc5, 0x85, 0xf1, 0x20, 0xe7, 0x7e, 0x97, 0x35, 0xf6, 0xfe, 0x06, 0x11, 0x4f, 0x4d, 0xed,
-	0x54, 0x7b, 0xa9, 0xa9, 0xe4, 0xec, 0x3b, 0x00, 0x00, 0xff, 0xff, 0x4f, 0x6d, 0xdf, 0x57, 0x60,
-	0x02, 0x00, 0x00,
 }

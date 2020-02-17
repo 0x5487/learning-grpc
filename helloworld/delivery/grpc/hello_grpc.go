@@ -1,15 +1,17 @@
 package grpc
 
 import (
-	"google.golang.org/grpc/metadata"
-	"github.com/jasonsoft/grpc-example/types"
-	"fmt"
-	"google.golang.org/grpc/status"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc"
 	"context"
+	"errors"
+	"fmt"
 	"io"
+	"os"
+	"runtime"
 	"strconv"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 
 	proto "github.com/jasonsoft/grpc-example/helloworld/proto"
 	//epb "google.golang.org/genproto/googleapis/rpc/errdetails"
@@ -22,27 +24,26 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (_ interface{}, err error) {
 		defer func() {
 			if r := recover(); r != nil {
-				// unknown error.  hanlder status code is 500 series.
-				logger := log.StackTrace()
+				// unknown error
 				err, ok := r.(error)
 				if !ok {
-					if err == nil {
-						err = fmt.Errorf("%v", r)
-					} else {
-						err = fmt.Errorf("%v", err)
-					}
+					err = fmt.Errorf("unknown error: %v", r)
 				}
-
-				logger.Errorf("unknown error: %v", err)
-				err = status.Error(codes.Unknown, err.Error())
+				trace := make([]byte, 4096)
+				runtime.Stack(trace, true)
+				log.WithField("stack_trace", string(trace)).WithError(err).Error("unknown error")
+				os.Exit(1)
 			}
 		}()
 
-		return handler(ctx, req)
+		result, err := handler(ctx, req)
+		if err != nil {
+			log.WithError(err).Errorf("unary error")
+		}
+		return result, err
 
 	}
 }
-
 
 type Server struct{}
 
@@ -74,17 +75,13 @@ func (s *Server) SayHello(ctx context.Context, in *proto.HelloRequest) (*proto.H
 	if userID != "jason" || roles != "admin" {
 		return nil, grpc.Errorf(codes.Unauthenticated, "wrong password")
 	}
-	err := daos.CreateAccount(ctx, account)
-	// appErr := types.AppError{
-	// 	ErrorCode: "404001",
-	// 	Message: "account was not found",
+
+	err := errors.New("not found")
+	// if err != nil {
+	// 	err = status.Error(codes.NotFound, appErr.Error())
 	// }
-	if err != nil {
-		err := status.Error(codes.NotFound, appErr.Error())
-	}
 
-
-	err := status.Error(codes., appErr.Error())
+	// err = status.Error(codes.NotFound, "not found")
 	return nil, err
 	//return &proto.HelloReply{Message: "Hello " + in.Name}, nil
 }
@@ -110,7 +107,7 @@ func (s *Server) BidStream(stream proto.Chat_BidStreamServer) error {
 				return nil
 			}
 			if err != nil {
-				log.Info("接收數據出錯:", err)
+				log.Infof("接收數據出錯:", err)
 				return err
 			}
 			// 如果接收正常，則根據接收到的 字符串 執行相應的指令
@@ -132,7 +129,7 @@ func (s *Server) BidStream(stream proto.Chat_BidStreamServer) error {
 				}
 			default:
 				// 缺省情況下， 返回 '服務端返回: ' + 輸入信息
-				log.Info("[收到消息]: %s", message.Input)
+				log.Infof("[收到消息]: %s", message.Input)
 				if err := stream.Send(&proto.BidStreamReply{Output: "服務端返回: " + message.Input}); err != nil {
 					return err
 				}

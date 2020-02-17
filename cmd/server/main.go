@@ -3,7 +3,7 @@ package main
 import (
 	"net"
 
-	"github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	helloWorldGRPC "github.com/jasonsoft/grpc-example/helloworld/delivery/grpc"
 	helloworldProto "github.com/jasonsoft/grpc-example/helloworld/proto"
 	"github.com/jasonsoft/log"
@@ -17,7 +17,10 @@ const (
 
 // server is used to implement helloworld.GreeterServer.
 func main() {
-	log.SetAppID("grpc-server") // unique id for the app
+	defaultFeilds := log.Fields{
+		"app_id": "grpc-server",
+	}
+	log.WithDefaultFields(defaultFeilds)
 
 	clog := console.New()
 	log.RegisterHandler(clog, log.AllLevels...)
@@ -39,5 +42,4 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
-
 }

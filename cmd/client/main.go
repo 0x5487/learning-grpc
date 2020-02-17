@@ -1,11 +1,12 @@
 package main
 
 import (
-	"google.golang.org/grpc/status"
 	"context"
 	"io"
 	"os"
 	"time"
+
+	"google.golang.org/grpc/status"
 
 	helloworldProto "github.com/jasonsoft/grpc-example/helloworld/proto"
 	"github.com/jasonsoft/log"
@@ -35,8 +36,6 @@ func (c customCredential) RequireTransportSecurity() bool {
 func main() {
 	ctx := context.Background()
 
-	log.SetAppID("grpc-server") // unique id for the app
-
 	clog := console.New()
 	log.RegisterHandler(clog, log.AllLevels...)
 
@@ -62,7 +61,7 @@ func main() {
 	r, err := c.SayHello(context.Background(), &helloworldProto.HelloRequest{Name: name})
 	if err != nil {
 		s := status.Convert(err)
-		log.Fatalf("main: could not greet: code=> %d, message => %s, ", s.Code() , s.Message())
+		log.Fatalf("main: could not greet: code=> %d, message => %s, ", s.Code(), s.Message())
 	}
 	log.Infof("Greeting: %s", r.Message)
 
@@ -75,7 +74,7 @@ func main() {
 		log.Errorf("Error: %v", err)
 	}
 
-	log.Debug("healthCheckResp : %s", healthCheckResp.Status)
+	log.Debugf("healthCheckResp : %s", healthCheckResp.Status)
 }
 
 func testPing(conn *grpc.ClientConn) {
@@ -98,7 +97,7 @@ func testChat(conn *grpc.ClientConn) {
 	client := helloworldProto.NewChatClient(conn)
 	stream, err := client.BidStream(ctx)
 	if err != nil {
-		log.Info("create chat client fail: [%v]\n", err)
+		log.Infof("create chat client fail: [%v]\n", err)
 	}
 
 	// send message to server

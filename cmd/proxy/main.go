@@ -15,8 +15,6 @@ import (
 )
 
 func main() {
-	log.SetAppID("grpc-proxy") // unique id for the app
-
 	clog := console.New()
 	log.RegisterHandler(clog, log.AllLevels...)
 
