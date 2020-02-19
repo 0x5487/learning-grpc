@@ -44,7 +44,7 @@ func ErrorInterceptor() grpc.UnaryServerInterceptor {
 		result, err := handler(ctx, req)
 		if err != nil {
 			// centralized error
-			log.WithError(err).Errorf("unary error")
+			log.WithError(err).Errorf("unary error: %v", err)
 
 			if errPKG.Is(err, ErrNotFound) {
 				err = status.Error(codes.NotFound, "not found")
@@ -70,8 +70,9 @@ func (s *Server) SayHello(ctx context.Context, in *proto.HelloRequest) (*proto.H
 	}
 
 	var (
-		userID string
-		roles  string
+		userID    string
+		roles     string
+		requestID string
 	)
 
 	if val, ok := md["user_id"]; ok {
@@ -81,8 +82,11 @@ func (s *Server) SayHello(ctx context.Context, in *proto.HelloRequest) (*proto.H
 	if val, ok := md["roles"]; ok {
 		roles = val[0]
 	}
+	if val, ok := md["request_id"]; ok {
+		requestID = val[0]
+	}
 
-	log.Debugf("userID: %s roles: %s", userID, roles)
+	log.Debugf("userID: %s roles: %s, requestID: %s", userID, roles, requestID)
 
 	if userID != "jason" || roles != "admin" {
 		return nil, grpc.Errorf(codes.Unauthenticated, "wrong password")

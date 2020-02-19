@@ -7,7 +7,7 @@ import "google/protobuf/timestamp.proto";
 // The request message containing the user's name.
 message HelloRequest {
   string name = 1;
-  google.protobuf.Timestamp CreatedAt = 2; 
+  google.protobuf.Timestamp created_at = 2; 
 }
 
 // The response message containing the greetings

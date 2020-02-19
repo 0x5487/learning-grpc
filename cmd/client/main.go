@@ -2,22 +2,24 @@ package main
 
 import (
 	"context"
+	"errors"
 	"io"
 	"os"
 	"time"
 
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
 	helloworldProto "github.com/jasonsoft/grpc-example/helloworld/proto"
 	"github.com/jasonsoft/log"
 	"github.com/jasonsoft/log/handlers/console"
-	"google.golang.org/grpc"
 )
 
 const (
 	address     = "localhost:10051"
-	defaultName = "error"
+	defaultName = "jason"
 )
 
 // customCredential 自定義認證
@@ -46,6 +48,7 @@ func main() {
 			Timeout:             5,    // wait 5 second for ping ack before considering the connection dead
 			PermitWithoutStream: true, // send pings even without active streams
 		}),
+		grpc.WithUnaryInterceptor(requestIDClientInterceptor()),
 	)
 
 	if err != nil {
@@ -62,8 +65,17 @@ func main() {
 	}
 	r, err := c.SayHello(context.Background(), &helloworldProto.HelloRequest{Name: name})
 	if err != nil {
-		grpcErr := status.Convert(err)
-		log.Fatalf("main: could not greet: code=> %d, message => %s, ", grpcErr.Code(), grpcErr.Message())
+		// test convert to status
+		err1 := errors.New("not here")
+		aaa := status.Convert(err1)
+		if aaa == nil {
+			log.Debug("aaa can't convert to grpc status")
+		} else {
+			log.Debugf("aaa to grpc status: %v", aaa.Err())
+		}
+
+		grpcStatus := status.Convert(err)
+		log.Fatalf("main: could not greet: code=> %d, message => %s, ", grpcStatus.Code(), grpcStatus.Message())
 	}
 	log.Infof("Greeting: %s", r.Message)
 }
@@ -101,5 +113,28 @@ func testChat(conn *grpc.ClientConn) {
 		}
 		// 沒有錯誤的情況下，打印來自服務端的消息
 		log.Infof("[客戶端收到]: %s", message.Output)
+	}
+}
+
+func requestIDClientInterceptor() grpc.UnaryClientInterceptor {
+	return func(
+		ctx context.Context,
+		method string, req, resp interface{},
+		cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption,
+	) (err error) {
+		logger := log.FromContext(ctx)
+		logger.Debug("== begin invoker ==")
+
+		md, ok := metadata.FromOutgoingContext(ctx)
+		if !ok {
+			md = metadata.Pairs()
+		}
+
+		md["request_id"] = []string{"abc-xyz"}
+
+		err = invoker(metadata.NewOutgoingContext(ctx, md), method, req, resp, cc, opts...)
+		logger.Debug("== end invoker ==")
+
+		return
 	}
 }
