@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	proto "github.com/jasonsoft/grpc-example/helloworld/proto"
+	proto "github.com/jasonsoft/learning-grpc/helloworld/proto"
 	//epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"github.com/jasonsoft/log"
 	errPKG "github.com/rotisserie/eris"
@@ -88,9 +88,9 @@ func (s *Server) SayHello(ctx context.Context, in *proto.HelloRequest) (*proto.H
 
 	log.Debugf("userID: %s roles: %s, requestID: %s", userID, roles, requestID)
 
-	if userID != "jason" || roles != "admin" {
-		return nil, grpc.Errorf(codes.Unauthenticated, "wrong password")
-	}
+	// if userID != "jason" || roles != "admin" {
+	// 	return nil, grpc.Errorf(codes.Unauthenticated, "wrong password")
+	// }
 
 	if in.Name == "error" {
 		return nil, ErrNotFound
@@ -120,7 +120,7 @@ func (s *Server) BidStream(stream proto.Chat_BidStreamServer) error {
 				return nil
 			}
 			if err != nil {
-				log.Infof("接收數據出錯:", err)
+				log.Infof("接收數據出錯: %v", err)
 				return err
 			}
 			// 如果接收正常，則根據接收到的 字符串 執行相應的指令

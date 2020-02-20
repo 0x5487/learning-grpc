@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	helloworldProto "github.com/jasonsoft/grpc-example/helloworld/proto"
+	helloworldProto "github.com/jasonsoft/learning-grpc/helloworld/proto"
 	"github.com/jasonsoft/log"
 	"github.com/jasonsoft/log/handlers/console"
 )

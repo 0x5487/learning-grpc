@@ -1,4 +1,4 @@
-module github.com/jasonsoft/grpc-example
+module github.com/jasonsoft/learning-grpc
 
 go 1.12
 
@@ -13,5 +13,6 @@ require (
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20200212174721-66ed5ce911ce // indirect
 	google.golang.org/grpc v1.27.1
+	gotest.tools v2.2.0+incompatible
 	grpc.go4.org v0.0.0-20170609214715-11d0a25b4919
 )

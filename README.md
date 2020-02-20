@@ -5,6 +5,7 @@
 1. Protocol Buffers naming style guide (https://developers.google.com/protocol-buffers/docs/style)
 1. send metadata from client to server (https://github.com/grpc/grpc-go/blob/master/Documentation/grpc-metadata.md)
 1. client-side Interceptor (https://xuanwo.io/2019/03/10/request-id-in-grpc/)
+1. how to write grpc unit test (https://stackoverflow.com/questions/42102496/testing-a-grpc-service)
 
 
 ## installation 

@@ -5,8 +5,8 @@ import (
 	"time"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	helloWorldGRPC "github.com/jasonsoft/grpc-example/helloworld/delivery/grpc"
-	helloworldProto "github.com/jasonsoft/grpc-example/helloworld/proto"
+	helloWorldGRPC "github.com/jasonsoft/learning-grpc/helloworld/delivery/grpc"
+	helloworldProto "github.com/jasonsoft/learning-grpc/helloworld/proto"
 	"github.com/jasonsoft/log"
 	"github.com/jasonsoft/log/handlers/console"
 	"google.golang.org/grpc"
